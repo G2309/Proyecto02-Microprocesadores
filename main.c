@@ -71,32 +71,25 @@ int main(void) {
       // Mostrar matrices...
       int frame_count = 0;
       while (!empleados_terminaron || !dron_termino) {
-        // TODO Limpiar la pantalla
         printf("\033[H\033[2J");
-        // Mostrar parcela empleados
-        printf("\033[92mParcela empleados:\n");
-        for (int i = 0; i < ancho_parcela; i++) {
-          for (int j = 0; j < largo_parcela; j++) {
-            int celda_fumigada = parcela_empleados[ancho_parcela * i + j];
-
-            if (celda_fumigada) {
-              printf("\033[34m 1 ");
-            } else {
-              printf("\033[91m 0 ");
-            }
-          }
-          printf("\n");
-        }
-        // alternativa:
-        // printMatrix(parcela_dron, largo_parcela, ancho_parcela)
+        printf("\033[92mParcela Empleados:\n");
+        printMatrix(parcela_empleados, ancho_parcela, largo_parcela);
 
         printf("\033[92mParcela Dron:\n");
-		printMatrix(parcela_dron, ancho_parcela, largo_parcela);
+        printMatrix(parcela_dron, ancho_parcela, largo_parcela);
         printf("Frame %d...\n", ++frame_count);
         usleep(1000000 / 60); // 60 frames per second.
       }
+	  // Mostrando estado final...
+      printf("\033[H\033[2J");
+      printf("\033[92mParcela Empleados:\n");
+      printMatrix(parcela_empleados, ancho_parcela, largo_parcela);
 
-      printf("Se mostraron las parcelas...\n");
+      printf("\033[92mParcela Dron:\n");
+      printMatrix(parcela_dron, ancho_parcela, largo_parcela);
+      printf("Frame %d...\n", ++frame_count);
+
+      printf("Se termino de fumigar, calculando datos...\n");
     }
 
 #pragma omp section

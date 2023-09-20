@@ -48,7 +48,7 @@ int main(void) {
 
   int parcela_empleados[largo_parcela * ancho_parcela];
   int parcela_dron[largo_parcela * ancho_parcela];
-  uint wait_seconds = 10 / ticks_por_segundo;
+  uint wait_seconds = 1 / ticks_por_segundo;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
   fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
@@ -69,9 +69,10 @@ int main(void) {
 #pragma omp section
     {
       // Mostrar matrices...
-      while (!empleados_terminaron && !dron_termino) {
+      int frame_count = 0;
+      while (!empleados_terminaron || !dron_termino) {
         // TODO Limpiar la pantalla
-        printf("\033[2H");
+        printf("\033[H\033[2J");
         // Mostrar parcela empleados
         printf("\033[92mParcela empleados:\n");
         for (int i = 0; i < ancho_parcela; i++) {
@@ -79,7 +80,6 @@ int main(void) {
             int celda_fumigada = parcela_empleados[ancho_parcela * i + j];
 
             if (celda_fumigada) {
-              // TODO Imprimir con color
               printf("\033[31m 1 ");
             } else {
               printf("\033[91m 0 ");
@@ -91,34 +91,38 @@ int main(void) {
         // printMatrix(parcela_dron, largo_parcela, ancho_parcela)
 
         // TODO Mostrar parcela dron...
-        printf("\nParcela dron:\n");
+        printf("\033[92mParcela Dron:\n");
         for (int i = 0; i < ancho_parcela; i++) {
           for (int j = 0; j < largo_parcela; j++) {
-            int celda_fumigada = parcela_empleados[ancho_parcela * i + j];
+            int celda_fumigada = parcela_dron[ancho_parcela * i + j];
 
             if (celda_fumigada) {
-              // TODO Imprimir con color
-              printf("1 ");
+              printf("\033[31m 1 ");
             } else {
-              printf("0 ");
+              printf("\033[91m 0 ");
             }
           }
           printf("\n");
         }
+        printf("Frame %d...\n", ++frame_count);
+		usleep(1000000 / 60);
       }
 
-      printf("Mostrando parcelas...");
+      printf("Se mostraron las parcelas...\n");
     }
 
 #pragma omp section
     {
-      int seccion_sin_fumigar = 0;
+      int seccion_sin_fumigar = -1;
       // Drone fumiga parcela...
       while (!dron_termino) {
-        for (dron_tick_count += 1; seccion_sin_fumigar <= secciones_por_tick;
-             seccion_sin_fumigar++) {
+        dron_tick_count += 1;
+
+        for (int i = 0; i <= velocidad_dron; i++) {
+          seccion_sin_fumigar += 1;
           parcela_dron[seccion_sin_fumigar] = 1;
           dron_termino = (total_a_fumigar - 1);
+
           if (dron_termino) {
             break;
           }
@@ -130,17 +134,15 @@ int main(void) {
 
 #pragma omp section
     {
-      int primera_seccion_sin_fumigar = 0;
+      int seccion_sin_fumigar = -1;
 
       while (!empleados_terminaron) {
         empleados_tick_count += 1;
 
-        // Fumigar
-        for (; primera_seccion_sin_fumigar <= secciones_por_tick;
-             primera_seccion_sin_fumigar++) {
-          parcela_empleados[primera_seccion_sin_fumigar] = 1;
-          empleados_terminaron =
-              primera_seccion_sin_fumigar == (total_a_fumigar - 1);
+        for (int i = 0; i <= secciones_por_tick; i++) {
+          seccion_sin_fumigar += 1;
+          parcela_empleados[seccion_sin_fumigar] = 1;
+          empleados_terminaron = seccion_sin_fumigar == (total_a_fumigar - 1);
 
           if (empleados_terminaron) {
             break;

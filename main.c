@@ -19,7 +19,7 @@ int main(void) {
   //            |
   int largo_parcela = 0;
   int ancho_parcela = 0;
-  int ticks_cada_10_segundos = 1;
+  int ticks_por_segundo = 1;
   printf("Ingresa el largo y ancho de la parcela:\n");
   fscanf(stdin, "%d %d", &largo_parcela, &ancho_parcela);
   fgetc(stdin); // Quita el \n del final
@@ -34,7 +34,7 @@ int main(void) {
   printf("Ingresa la velocidad del dron:\n");
   fscanf(stdin, "%d", &velocidad_dron);
   printf("Ingresa los ticks por segundo:\n");
-  fscanf(stdin, "%d", &ticks_cada_10_segundos);
+  fscanf(stdin, "%d", &ticks_por_segundo);
 
   for (int i = 0; i < index; i++) {
     printf("La velocidad del empleado %d es %d\n", i, velocidades_empleados[i]);
@@ -48,20 +48,20 @@ int main(void) {
 
   int parcela_empleados[largo_parcela * ancho_parcela];
   int parcela_dron[largo_parcela * ancho_parcela];
-  uint wait_seconds = 10 / ticks_cada_10_segundos;
+  uint wait_seconds = 1000000 / ticks_por_segundo;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
   fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
   fillMatrix(parcela_empleados, largo_parcela, ancho_parcela);
 
-  int secciones_por_tick = 0;
+  int velocidad_conjunta_empleados = 0;
 #pragma omp parallel for reduction(+ : secciones_por_tick)
   for (int empleadoI = 0; empleadoI < index; empleadoI++) {
-    secciones_por_tick += velocidades_empleados[empleadoI];
+    velocidad_conjunta_empleados += velocidades_empleados[empleadoI];
   }
 
   printf("Los empleados en conjunto fumigan %d secciones por tick\n",
-         secciones_por_tick);
+         velocidad_conjunta_empleados);
 
 #pragma omp parallel sections shared(empleados_terminaron, dron_termino,       \
                                      parcela_dron, parcela_empleados)
@@ -105,7 +105,7 @@ int main(void) {
           printf("\n");
         }
         printf("Frame %d...\n", ++frame_count);
-        usleep(1000000 / 60);
+        usleep(1000000 / 60); // 60 frames per second.
       }
 
       printf("Se mostraron las parcelas...\n");
@@ -128,7 +128,7 @@ int main(void) {
           }
         }
 
-        sleep(wait_seconds);
+        usleep(wait_seconds);
       }
     }
 
@@ -139,7 +139,7 @@ int main(void) {
       while (!empleados_terminaron) {
         empleados_tick_count += 1;
 
-        for (int i = 0; i <= secciones_por_tick; i++) {
+        for (int i = 0; i <= velocidad_conjunta_empleados; i++) {
           seccion_sin_fumigar += 1;
           parcela_empleados[seccion_sin_fumigar] = 1;
           empleados_terminaron = seccion_sin_fumigar == (total_a_fumigar - 1);
@@ -149,7 +149,7 @@ int main(void) {
           }
         }
 
-        sleep(wait_seconds);
+        usleep(wait_seconds);
       }
     }
   }
@@ -162,6 +162,7 @@ void printMatrix(int arr[], int height, int width) {
     for (int j = 0; j < width; j++) {
       int index = i * width + j;
       int should_color = arr[index];
+
       if (should_color) {
         printf("\033[34m 1 ");
       } else {

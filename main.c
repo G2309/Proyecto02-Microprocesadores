@@ -55,7 +55,7 @@ int main(void) {
   fillMatrix(parcela_empleados, largo_parcela, ancho_parcela);
 
   int velocidad_conjunta_empleados = 0;
-#pragma omp parallel for reduction(+ : secciones_por_tick)
+#pragma omp parallel for reduction(+ : velocidad_conjunta_empleados)
   for (int empleadoI = 0; empleadoI < index; empleadoI++) {
     velocidad_conjunta_empleados += velocidades_empleados[empleadoI];
   }
@@ -90,20 +90,8 @@ int main(void) {
         // alternativa:
         // printMatrix(parcela_dron, largo_parcela, ancho_parcela)
 
-        // TODO Mostrar parcela dron...
         printf("\033[92mParcela Dron:\n");
-        for (int i = 0; i < ancho_parcela; i++) {
-          for (int j = 0; j < largo_parcela; j++) {
-            int celda_fumigada = parcela_dron[ancho_parcela * i + j];
-
-            if (celda_fumigada) {
-              printf("\033[34m 1 ");
-            } else {
-              printf("\033[91m 0 ");
-            }
-          }
-          printf("\n");
-        }
+		printMatrix(parcela_dron, ancho_parcela, largo_parcela);
         printf("Frame %d...\n", ++frame_count);
         usleep(1000000 / 60); // 60 frames per second.
       }

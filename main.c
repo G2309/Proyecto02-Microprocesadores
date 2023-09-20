@@ -9,7 +9,7 @@ void printMatrix();
 
 int main(void) {
   int velocidades_empleados[256];
-  int velocidad_dron = 0.0;
+  int velocidad_dron = 0;
 
   // ---largo----
   //            |
@@ -20,19 +20,20 @@ int main(void) {
   int largo_parcela = 0;
   int ancho_parcela = 0;
   int ticks_por_segundo = 1;
-  printf("Ingresa el largo y ancho de la parcela: ");
+  printf("Ingresa el largo y ancho de la parcela:\n");
   fscanf(stdin, "%d %d", &largo_parcela, &ancho_parcela);
+  fgetc(stdin);// Quita el \n del final
 
   int index = 0;
-  printf("Ingresa las velicdades de los empleados: ");
+  printf("Ingresa las velocidades de los empleados:\n");
   while ((fscanf(stdin, "%d", &velocidades_empleados[index])) == 1) {
     fgetc(stdin); // Quitar el \n del final.
     index++;
   }
   fgetc(stdin); // Quitar \n después del '-'
-  printf("Ingresa la velocidad del dron");
+  printf("Ingresa la velocidad del dron:\n");
   fscanf(stdin, "%d", &velocidad_dron);
-  printf("Ingresa los ticks por segundo");
+  printf("Ingresa los ticks por segundo:\n");
   fscanf(stdin, "%d", &ticks_por_segundo);
 
   for (int i = 0; i < index; i++) {
@@ -61,6 +62,7 @@ int main(void) {
 #pragma omp section
     {
       // Mostrar matrices...
+	  printf("Parcela empleados:\n");
       while (!empleados_terminaron && !dron_termino) {
         // TODO Limpiar la pantalla
 
@@ -72,15 +74,17 @@ int main(void) {
 
             if (celda_fumigada) {
               // TODO Imprimir con color
-              printf("%d", parcela_dron[largo_parcela * ancho_parcela + j]);
+              printf("1 ");
             } else {
-              printf("%d", parcela_dron[largo_parcela * ancho_parcela + j]);
+              printf("0 ");
             }
           }
           printf("\n");
         }
         // alternativa:
         // printMatrix(parcela_dron, largo_parcela, ancho_parcela)
+
+		printf("\nParcela dron:\n");
 
         // TODO Mostrar parcela dron...
         for (int i = 0; i < ancho_parcela; i++) {

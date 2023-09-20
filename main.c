@@ -6,6 +6,7 @@
 //#include <cstdlib>
 
 void printMatrix();
+void fillMatrix(int arr[], int height, int width);
 
 int main(void) {
   int velocidades_empleados[256];
@@ -51,13 +52,16 @@ int main(void) {
   uint wait_microseconds = 1000000 / ticks_por_segundo;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
+  fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
+  fillMatrix(parcela_empleados, largo_parcela, ancho_parcela);
+
   int secciones_por_tick = 0;
 #pragma omp parallel for reduction(+ : secciones_por_tick)
   for (int empleadoI = 0; empleadoI < index; empleadoI++) {
     secciones_por_tick += velocidades_empleados[empleadoI];
   }
 
-#pragma omp parallel sections
+#pragma omp parallel sections shared(empleados_terminaron, dron_termino, parcela_dron, parcela_empleados)
   {
 #pragma omp section
     {
@@ -70,7 +74,7 @@ int main(void) {
         for (int i = 0; i < ancho_parcela; i++) {
           for (int j = 0; i < largo_parcela; j++) {
             int celda_fumigada =
-                parcela_dron[largo_parcela * ancho_parcela + j];
+                parcela_empleados[largo_parcela * ancho_parcela + j];
 
             if (celda_fumigada) {
               // TODO Imprimir con color
@@ -152,8 +156,17 @@ void printMatrix(int arr[], int height, int width) {
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       int index = i * width + j;
-      printf("%d\t", arr[index]);
+      printf("%d ", arr[index]);
     }
     printf("\n"); // Moverse a la siguiente fila
+  }
+}
+
+
+void fillMatrix(int arr[], int height, int width){
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      arr[i*width+j] = 0;
+    }
   }
 }

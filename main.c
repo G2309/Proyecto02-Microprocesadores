@@ -80,7 +80,7 @@ int main(void) {
             int celda_fumigada = parcela_empleados[ancho_parcela * i + j];
 
             if (celda_fumigada) {
-              printf("\033[31m 1 ");
+              printf("\033[34m 1 ");
             } else {
               printf("\033[91m 0 ");
             }
@@ -97,7 +97,7 @@ int main(void) {
             int celda_fumigada = parcela_dron[ancho_parcela * i + j];
 
             if (celda_fumigada) {
-              printf("\033[31m 1 ");
+              printf("\033[34m 1 ");
             } else {
               printf("\033[91m 0 ");
             }
@@ -121,7 +121,7 @@ int main(void) {
         for (int i = 0; i <= velocidad_dron; i++) {
           seccion_sin_fumigar += 1;
           parcela_dron[seccion_sin_fumigar] = 1;
-          dron_termino = (total_a_fumigar - 1);
+          dron_termino = seccion_sin_fumigar == (total_a_fumigar - 1);
 
           if (dron_termino) {
             break;

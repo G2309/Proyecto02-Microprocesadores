@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-//#include <cstdlib>
+
 
 void printMatrix();
 void fillMatrix(int arr[], int height, int width);
@@ -66,10 +66,10 @@ int main(void) {
 #pragma omp section
     {
       // Mostrar matrices...
-	  printf("Parcela empleados:\n");
+	  printf("\033[92mParcela empleados:\n");
       while (!empleados_terminaron && !dron_termino) {
         // TODO Limpiar la pantalla
-
+	printf("\033[2H");
         // Mostrar parcela empleados
         for (int i = 0; i < ancho_parcela; i++) {
           for (int j = 0; i < largo_parcela; j++) {
@@ -78,9 +78,9 @@ int main(void) {
 
             if (celda_fumigada) {
               // TODO Imprimir con color
-              printf("1 ");
+              printf("\033[31m 1 ");
             } else {
-              printf("0 ");
+              printf("\033[91m 0 ");
             }
           }
           printf("\n");

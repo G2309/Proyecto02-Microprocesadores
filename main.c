@@ -4,10 +4,22 @@
 #include <string.h>
 #include <unistd.h>
 
+#define FG_RED "\033[91m"
+#define FG_BLUE "\033[34m"
+#define FG_YELLOW "\033[33m"
+#define FG_WHITE "\033[97m"
+#define FG_GREEN "\033[32m"
+
+#define BG_GREEN "\033[42m"
+#define COLOR_RESET "\033[0m"
+
 void printMatrix(int arr[], int height, int width);
 void fillMatrix(int arr[], int height, int width);
+void printIntro();
+void clearConsole();
 
 int main(void) {
+  printIntro();
   int velocidades_empleados[256];
   int velocidad_dron = 0;
 
@@ -71,7 +83,7 @@ int main(void) {
       // Mostrar matrices...
       int frame_count = 0;
       while (!empleados_terminaron || !dron_termino) {
-        printf("\033[H\033[2J");
+        clearConsole();
         printf("\033[92mParcela Empleados:\n");
         printMatrix(parcela_empleados, ancho_parcela, largo_parcela);
 
@@ -80,7 +92,7 @@ int main(void) {
         printf("Frame %d...\n", ++frame_count);
         usleep(1000000 / 60); // 60 frames per second.
       }
-	  // Mostrando estado final...
+      // Mostrando estado final...
       printf("\033[H\033[2J");
       printf("\033[92mParcela Empleados:\n");
       printMatrix(parcela_empleados, ancho_parcela, largo_parcela);
@@ -145,9 +157,9 @@ void printMatrix(int arr[], int height, int width) {
       int should_color = arr[index];
 
       if (should_color) {
-        printf("\033[34m 1 ");
+        printf(FG_BLUE "1" COLOR_RESET);
       } else {
-        printf("\033[91m 0 ");
+        printf(FG_RED "0" COLOR_RESET);
       }
     }
     printf("\n"); // Moverse a la siguiente fila
@@ -160,4 +172,118 @@ void fillMatrix(int arr[], int height, int width) {
       arr[i * width + j] = 0;
     }
   }
+}
+
+void printAnimated(char txt[], int ms_duration);
+void printTyping(char txt[]);
+void printSlow(char txt[]);
+void printNewLine();
+void simulateLoading(char start[], char middle[], char end[], char color[]);
+void printAnimatedWithColor(char txt[], char color[], int ms_duration);
+
+void showTitle(int ms_duration_per_char) {
+  printAnimated(FG_YELLOW "██╗   ██╗███████╗██╗", ms_duration_per_char);
+  printNewLine();
+  printAnimated("██║   ██║██╔════╝██║", ms_duration_per_char);
+  printNewLine();
+  printAnimated("██║   ██║███████╗██║", ms_duration_per_char);
+  printNewLine();
+  printAnimated("██║   ██║╚════██║██║", ms_duration_per_char);
+  printNewLine();
+  printAnimated("╚██████╔╝███████║██║", ms_duration_per_char);
+  printNewLine();
+  printAnimated(FG_YELLOW" ╚═════╝ ╚══════╝╚═╝" COLOR_RESET, ms_duration_per_char);
+}
+
+void printIntro() {
+
+  showTitle(5);
+  printNewLine();
+
+  printTyping("WELCOME!!");
+  printNewLine();
+  printTyping(FG_YELLOW "Universal simulation industries®" COLOR_RESET
+                        " thanks you for using our "
+                        "software beta");
+  printNewLine();
+  printTyping("NOTE: Please read the manual carefully before using!");
+  printNewLine();
+  printTyping(FG_YELLOW
+              "Universal simulation industries®" COLOR_RESET
+              " isn't responsible for any "
+              "injuries, false positives or universe annihilation caused by "
+              "the misuse of this program.");
+  printNewLine();
+
+  simulateLoading("Loading universe", "....", "DONE!", FG_GREEN);
+  printNewLine();
+
+  simulateLoading("Retrieving world assets", "....", "DONE!", FG_GREEN);
+  printNewLine();
+
+  printTyping("Starting");
+  printSlow("...");
+
+  sleep(2);
+  clearConsole();
+}
+
+void printTyping(char txt[]) { printAnimated(txt, 60); }
+void printTypingWithColor(char txt[], char color[]) {
+  printAnimatedWithColor(txt, color, 60);
+}
+void printSlow(char txt[]) { printAnimated(txt, 1000); }
+void printNewLine() { printf("\n"); }
+void simulateLoading(char start[], char middle[], char end[], char color[]) {
+  printTyping(start);
+  printSlow(middle);
+  printTypingWithColor(end, color);
+}
+
+void printAnimatedWithColor(char txt[], char color[], int ms_duration) {
+  printf("%s", color);
+  char current = txt[0];
+  for (int i = 0; current != *"\0"; i++) {
+    current = txt[i];
+    for (int j = 0; j < i + 1; j++) {
+      printf("%c", txt[j]);
+    }
+    fflush(stdout);
+    usleep(ms_duration * 1000);
+
+    if (current == *"\0") {
+      break;
+    }
+
+    for (int j = 0; j < i + 1; j++) {
+      printf("\b");
+    }
+  }
+
+  printf(COLOR_RESET);
+}
+
+void printAnimated(char txt[], int ms_duration) {
+  char current = txt[0];
+  for (int i = 0; current != *"\0"; i++) {
+    current = txt[i];
+    for (int j = 0; j < i + 1; j++) {
+      printf("%c", txt[j]);
+    }
+    fflush(stdout);
+    usleep(ms_duration * 1000);
+
+    if (current == *"\0") {
+      break;
+    }
+
+    for (int j = 0; j < i + 1; j++) {
+      printf("\b");
+    }
+  }
+}
+
+void clearConsole() {
+  printf("\033[H\033[2J");
+  fflush(stdout);
 }

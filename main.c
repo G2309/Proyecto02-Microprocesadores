@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-void printMatrix();
+void printMatrix(int arr[], int height, int width);
 void fillMatrix(int arr[], int height, int width);
 
 int main(void) {

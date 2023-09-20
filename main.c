@@ -19,7 +19,7 @@ int main(void) {
   //            |
   int largo_parcela = 0;
   int ancho_parcela = 0;
-  int ticks_por_segundo = 1;
+  int ticks_cada_10_segundos = 1;
   printf("Ingresa el largo y ancho de la parcela:\n");
   fscanf(stdin, "%d %d", &largo_parcela, &ancho_parcela);
   fgetc(stdin); // Quita el \n del final
@@ -34,7 +34,7 @@ int main(void) {
   printf("Ingresa la velocidad del dron:\n");
   fscanf(stdin, "%d", &velocidad_dron);
   printf("Ingresa los ticks por segundo:\n");
-  fscanf(stdin, "%d", &ticks_por_segundo);
+  fscanf(stdin, "%d", &ticks_cada_10_segundos);
 
   for (int i = 0; i < index; i++) {
     printf("La velocidad del empleado %d es %d\n", i, velocidades_empleados[i]);
@@ -48,7 +48,7 @@ int main(void) {
 
   int parcela_empleados[largo_parcela * ancho_parcela];
   int parcela_dron[largo_parcela * ancho_parcela];
-  uint wait_seconds = 1 / ticks_por_segundo;
+  uint wait_seconds = 10 / ticks_cada_10_segundos;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
   fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
@@ -105,7 +105,7 @@ int main(void) {
           printf("\n");
         }
         printf("Frame %d...\n", ++frame_count);
-		usleep(1000000 / 60);
+        usleep(1000000 / 60);
       }
 
       printf("Se mostraron las parcelas...\n");
@@ -161,7 +161,12 @@ void printMatrix(int arr[], int height, int width) {
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       int index = i * width + j;
-      printf("%d ", arr[index]);
+      int should_color = arr[index];
+      if (should_color) {
+        printf("\033[34m 1 ");
+      } else {
+        printf("\033[91m 0 ");
+      }
     }
     printf("\n"); // Moverse a la siguiente fila
   }

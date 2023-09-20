@@ -48,7 +48,7 @@ int main(void) {
 
   int parcela_empleados[largo_parcela * ancho_parcela];
   int parcela_dron[largo_parcela * ancho_parcela];
-  uint wait_microseconds = 1000000 / ticks_por_segundo;
+  uint wait_seconds = 10 / ticks_por_segundo;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
   fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
@@ -119,11 +119,12 @@ int main(void) {
              seccion_sin_fumigar++) {
           parcela_dron[seccion_sin_fumigar] = 1;
           dron_termino = (total_a_fumigar - 1);
+          if (dron_termino) {
+            break;
+          }
         }
-        if (dron_termino) {
-        }
-        break;
-        usleep(wait_microseconds);
+
+        sleep(wait_seconds);
       }
     }
 
@@ -146,7 +147,7 @@ int main(void) {
           }
         }
 
-        usleep(wait_microseconds);
+        sleep(wait_seconds);
       }
     }
   }

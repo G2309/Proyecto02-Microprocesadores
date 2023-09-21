@@ -105,6 +105,30 @@ int main(int argc, char *argv[]) {
       printf("Frame %d...\n", ++frame_count);
 
       printf("Se termino de fumigar, calculando datos...\n");
+      printf("Los empleados se tardaron %d ticks \n", empleados_tick_count);
+      printf("El dron se tardo %d ticks \n", dron_tick_count);
+      if (empleados_tick_count > dron_tick_count){
+        int vpromempleados = velocidad_conjunta_empleados/index;
+        
+        int empleados_necesarios = (empleados_tick_count - dron_tick_count)/vpromempleados;
+        if (empleados_necesarios == 0){
+          printf("Se necesita por lo menos 1 empleado más para alcanzar el tiempo de fumigación del dron");
+        }
+        else{
+          printf("Los empleados se tardaron más que el dron, se necesitan : %d empleados en promedio para igualar el tiempo del dron \n", empleados_necesarios);
+        }
+  
+
+      }
+      else{
+        int drones_necesarios = (dron_tick_count - empleados_tick_count)/velocidad_dron;
+        if (drones_necesarios == 0){
+          printf("Se necesita por lo menos 1 dron mas para alcanzar el tiempo de fumigacion de los empleados");
+        }
+        else{
+          printf("Los empleados se tardaron más que el dron, se necesitan : %d empleados en promedio para igualar el tiempo del dron \n", drones_necesarios);
+        }   
+      }
 
       printOutro();
     }

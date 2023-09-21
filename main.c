@@ -358,3 +358,5 @@ void clearConsole() {
   printf("\033[H\033[2J");
   fflush(stdout);
 }
+
+

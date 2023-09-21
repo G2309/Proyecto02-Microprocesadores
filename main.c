@@ -11,15 +11,18 @@
 #define FG_GREEN "\033[32m"
 
 #define BG_GREEN "\033[42m"
-#define COLOR_RESET "\033[0m"
+#define RESET_COLOR "\033[0m"
 
 void printMatrix(int arr[], int height, int width);
 void fillMatrix(int arr[], int height, int width);
 void printIntro();
+void printOutro();
 void clearConsole();
 
-int main(void) {
-  printIntro();
+int main(int argc, char *argv[]) {
+  if (argc < 2) {
+    printIntro();
+  }
   int velocidades_empleados[256];
   int velocidad_dron = 0;
 
@@ -93,7 +96,7 @@ int main(void) {
         usleep(1000000 / 60); // 60 frames per second.
       }
       // Mostrando estado final...
-      printf("\033[H\033[2J");
+      clearConsole();
       printf("\033[92mParcela Empleados:\n");
       printMatrix(parcela_empleados, ancho_parcela, largo_parcela);
 
@@ -102,6 +105,8 @@ int main(void) {
       printf("Frame %d...\n", ++frame_count);
 
       printf("Se termino de fumigar, calculando datos...\n");
+
+      printOutro();
     }
 
 #pragma omp section
@@ -157,9 +162,9 @@ void printMatrix(int arr[], int height, int width) {
       int should_color = arr[index];
 
       if (should_color) {
-        printf(FG_BLUE "1" COLOR_RESET);
+        printf(FG_BLUE "1" RESET_COLOR);
       } else {
-        printf(FG_RED "0" COLOR_RESET);
+        printf(FG_RED "0" RESET_COLOR);
       }
     }
     printf("\n"); // Moverse a la siguiente fila
@@ -176,6 +181,7 @@ void fillMatrix(int arr[], int height, int width) {
 
 void printAnimated(char txt[], int ms_duration);
 void printTyping(char txt[]);
+void printTypingWithColor(char txt[], char color[]);
 void printSlow(char txt[]);
 void printNewLine();
 void simulateLoading(char start[], char middle[], char end[], char color[]);
@@ -192,7 +198,8 @@ void showTitle(int ms_duration_per_char) {
   printNewLine();
   printAnimated("╚██████╔╝███████║██║", ms_duration_per_char);
   printNewLine();
-  printAnimated(FG_YELLOW" ╚═════╝ ╚══════╝╚═╝" COLOR_RESET, ms_duration_per_char);
+  printAnimated(FG_YELLOW " ╚═════╝ ╚══════╝╚═╝" RESET_COLOR,
+                ms_duration_per_char);
 }
 
 void printIntro() {
@@ -202,14 +209,14 @@ void printIntro() {
 
   printTyping("WELCOME!!");
   printNewLine();
-  printTyping(FG_YELLOW "Universal simulation industries®" COLOR_RESET
-                        " thanks you for using our "
-                        "software beta");
+  printTypingWithColor("Universal simulation industries®", FG_YELLOW);
+  printTyping(" thanks you for using our "
+              "software beta");
   printNewLine();
   printTyping("NOTE: Please read the manual carefully before using!");
   printNewLine();
   printTyping(FG_YELLOW
-              "Universal simulation industries®" COLOR_RESET
+              "Universal simulation industries®" RESET_COLOR
               " isn't responsible for any "
               "injuries, false positives or universe annihilation caused by "
               "the misuse of this program.");
@@ -226,6 +233,40 @@ void printIntro() {
 
   sleep(2);
   clearConsole();
+}
+
+void printOutro() {
+  printAnimated(FG_GREEN "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠀⠀⠀⢀⣠⡴⠾⠛⠋⠉⠉⠉⠉⠙⠛⠷⢦⣄⡀⠀⠀⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠀⣠⣴⠟⢁⣠⠖⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣦⣄⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⢀⣼⠟⠁⣰⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣧⡀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⢀⡾⠁⢠⣾⡟⠁⠀⠀⠀⣠⣾⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠈⢷⡀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⢀⣾⠁⣠⣿⠏⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠈⣷⡀⠀", 3);
+  printNewLine();
+  printAnimated("⢸⡇⠀⣿⠏⠀⠀⢀⣴⣷⡀⠻⣿⣿⣿⣿⠟⢀⣾⣦⡀⠀⠀⠀⠀⠀⢸⡇⠀", 3);
+  printNewLine();
+  printAnimated("⢸⡇⠀⠀⠀⠀⠀⢸⣿⣿⣿⣦⣤⠈⠁⣤⣴⣿⣿⣿⡇⠀⠀⠀⢰⠃⢸⡇⠀", 3);
+  printNewLine();
+  printAnimated("⠈⢿⡀⠀⠀⠀⠀⠀⠻⠿⡿⠿⠃⠀⠀⠘⠿⢿⠿⠟⠀⠀⠀⡰⠟⢀⡿⠁⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠈⢿⣤⡀⠀⣀⣤⣤⣤⣀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣤⣀⠀⢀⣤⡿⠁⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠉⠛⠛⠋⣡⣤⣌⠙⠻⠶⣦⣴⠶⠟⠋⣡⣤⣌⠙⠛⠛⠉⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⢀⣴⣶⠄⠠⣶⣦⡀⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠀⠀⠀⢿⣿⣿⡏⠈⢿⣿⠀⠀⣿⡿⠁⢹⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated("⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⠀⠀⠉⠀⠀⠉⠀⠀⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀", 3);
+  printNewLine();
+  printAnimated(FG_GREEN"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" RESET_COLOR, 3);
+  printNewLine();
+
 }
 
 void printTyping(char txt[]) { printAnimated(txt, 60); }
@@ -260,7 +301,7 @@ void printAnimatedWithColor(char txt[], char color[], int ms_duration) {
     }
   }
 
-  printf(COLOR_RESET);
+  printf(RESET_COLOR);
 }
 
 void printAnimated(char txt[], int ms_duration) {

@@ -39,11 +39,11 @@ int main(int argc, char *argv[]) {
   fscanf(stdin, "%d %d", &largo_parcela, &ancho_parcela);
   fgetc(stdin); // Quita el \n del final
 
-  int index = 0;
+  int cuenta_empleados = 0;
   printf("Ingresa las velocidades de los empleados:\n");
-  while ((fscanf(stdin, "%d", &velocidades_empleados[index])) == 1) {
+  while ((fscanf(stdin, "%d", &velocidades_empleados[cuenta_empleados])) == 1) {
     fgetc(stdin); // Quitar el \n del final.
-    index++;
+    cuenta_empleados++;
   }
   fgetc(stdin); // Quitar \n después del '-'
   printf("Ingresa la velocidad del dron:\n");
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   printf("Ingresa los ticks por segundo:\n");
   fscanf(stdin, "%d", &ticks_por_segundo);
 
-  for (int i = 0; i < index; i++) {
+  for (int i = 0; i < cuenta_empleados; i++) {
     printf("La velocidad del empleado %d es %d\n", i, velocidades_empleados[i]);
   }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
   int parcela_empleados[largo_parcela * ancho_parcela];
   int parcela_dron[largo_parcela * ancho_parcela];
-  uint wait_seconds = 1000000 / ticks_por_segundo;
+  uint wait_microseconds = 1000000 / ticks_por_segundo;
   int total_a_fumigar = largo_parcela * ancho_parcela;
 
   fillMatrix(parcela_dron, largo_parcela, ancho_parcela);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
   int velocidad_conjunta_empleados = 0;
 #pragma omp parallel for reduction(+ : velocidad_conjunta_empleados)
-  for (int empleadoI = 0; empleadoI < index; empleadoI++) {
+  for (int empleadoI = 0; empleadoI < cuenta_empleados; empleadoI++) {
     velocidad_conjunta_empleados += velocidades_empleados[empleadoI];
   }
 
@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
           }
         }
 
-        usleep(wait_seconds);
+        usleep(wait_microseconds);
       }
     }
 
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
           }
         }
 
-        usleep(wait_seconds);
+        usleep(wait_microseconds);
       }
     }
   }

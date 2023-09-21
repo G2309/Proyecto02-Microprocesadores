@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
       printf("Los empleados se tardaron %d ticks \n", empleados_tick_count);
       printf("El dron se tardo %d ticks \n", dron_tick_count);
       if (empleados_tick_count > dron_tick_count){
-        int vpromempleados = velocidad_conjunta_empleados/index;
+        int vpromempleados = velocidad_conjunta_empleados/cuenta_empleados;
         
         int empleados_necesarios = (empleados_tick_count - dron_tick_count)/vpromempleados;
         if (empleados_necesarios == 0){
